@@ -44,6 +44,8 @@ class Future(object):
             raise self._failure[0], self._failure[1], self._failure[2]
         return self._value
 
+    results = value
+
     def finish(self, value):
         '''Give the future it's value and trigger any associated callbacks
 
@@ -192,17 +194,23 @@ class RPC(Future):
     :meth:`Hub.send_rpc <junction.hub.Hub.send_rpc>`.
     '''
 
-    def __init__(self, target_count, singular):
+    def __init__(self, target_count, singular, counter):
         super(RPC, self).__init__()
         self._target_count = target_count
         self._singular = singular
         self._results = []
         self._arrival = backend.Event()
+        self._counter = counter
 
     @property
     def target_count(self):
         'The number of hubs on which this RPC is waiting'
         return self._target_count
+
+    @property
+    def counter(self):
+        'The locally unique identifier for this RPC'
+        return self._counter
 
     @property
     def arrival(self):

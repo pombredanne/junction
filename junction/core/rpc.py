@@ -29,7 +29,7 @@ class RPCClient(object):
 
         self.sent(counter, targets)
 
-        rpc = futures.RPC(len(targets), singular)
+        rpc = futures.RPC(len(targets), singular, counter)
         self.rpcs[counter] = rpc
 
         for peer in targets:
@@ -43,7 +43,7 @@ class RPCClient(object):
 
         self.sent(counter, targets)
 
-        rpc = futures.RPC(len(targets), singular)
+        rpc = futures.RPC(len(targets), singular, counter)
         self.rpcs[counter] = rpc
 
         return rpc
@@ -109,7 +109,7 @@ class ProxiedClient(RPCClient):
 
         self.sent(counter, set([target]))
 
-        rpc = futures.RPC(1, False)
+        rpc = futures.RPC(1, False, counter)
         self.rpcs[counter] = rpc
 
         self.expect(target, counter, 1)

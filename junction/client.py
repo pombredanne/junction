@@ -231,3 +231,28 @@ class Client(object):
         return self._rpc_client.recipient_count(self._peer,
                 const.MSG_TYPE_RPC_REQUEST, service, routing_id, method).wait(
                         timeout)[0]
+
+    wait_any = staticmethod(futures.wait_any)
+
+    def dependency_root(self, func):
+        '''Create a parent-less :class:`Dependent <junction.futures.Dependent>`
+
+        This is like :meth:`RPC.after <junction.futures.RPC.after>` or
+        :meth:`Dependent.after <junction.futures.Dependent.after>` in that it
+        wraps a callback with a new :class:`Dependent
+        <junction.futures.Dependent>`, but this one has no parents (so the
+        callback should take no arguments).
+
+        :param func:
+            the callback function for the dependent (this will be started
+            immediately in a separate coroutine)
+        :type func: callable
+
+        :returns: a new :class:`Dependent <junction.futures.Dependent>`
+        '''
+        fut = futures.Future()
+        fut.complete(None)
+        @fut.after
+        def dep(n):
+            return func()
+        return dep

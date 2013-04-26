@@ -48,6 +48,8 @@
             - RPCs and Dependents inherit from Future the methods
                 on_finish and on_abort which will line up callbacks to
                 run but don't create Dependents.
+            - new function futures.after(parents, func) works like
+                parents[0].after(func, other_parents=parents[1:])
         - accompanying backwards incompatibilities:
             - RPC no longer has a "counter" attribute, this is now a private
                 implementation detail
@@ -56,7 +58,5 @@
             - Hub.dependency_root and Client.dependency_root are no more, now
                 you would create a Future and call its finish() method right
                 away.
-            - new function futures.after(parents, func) works like
-                parents[0].after(func, other_parents=parents[1:])
             - RPCs and Dependents no longer have a 'results' attribute, this
                 attribute is called 'value' (like their parent class Future)
